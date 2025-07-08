@@ -1,0 +1,192 @@
+# Quantum Teleportation Algorithm: Formal Mathematical Description
+
+## Abstract
+
+This document provides a formal mathematical description of the quantum teleportation protocol, which enables the transfer of an unknown quantum state from one location to another using shared entanglement and classical communication.
+
+## 1. Introduction
+
+Quantum teleportation is a fundamental protocol in quantum information theory that allows the transfer of an unknown quantum state from Alice (sender) to Bob (receiver) using shared entanglement and classical communication. The protocol was first proposed by Bennett et al. in 1993.
+
+## 2. Mathematical Preliminaries
+
+### 2.1 Bell States
+
+The protocol utilizes Bell states, which are maximally entangled two-qubit states:
+
+$$
+\begin{align}
+|\Phi^+\rangle &= \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle) \\
+|\Phi^-\rangle &= \frac{1}{\sqrt{2}}(|00\rangle - |11\rangle) \\
+|\Psi^+\rangle &= \frac{1}{\sqrt{2}}(|01\rangle + |10\rangle) \\
+|\Psi^-\rangle &= \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle)
+\end{align}
+$$
+
+### 2.2 Quantum Gates
+
+The protocol employs the following quantum gates:
+
+- **Hadamard gate**: $H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$
+- **Pauli-X gate**: $X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$
+- **Pauli-Z gate**: $Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$
+- **CNOT gate**: $CNOT = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{pmatrix}$
+
+## 3. Protocol Description
+
+### 3.1 Initial Setup
+
+Let Alice possess an unknown quantum state to be teleported:
+
+$$|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$$
+
+where $\alpha, \beta \in \mathbb{C}$ and $|\alpha|^2 + |\beta|^2 = 1$.
+
+Alice and Bob share a Bell state, which we denote as $|\Phi^+\rangle_{AB}$:
+
+$$|\Phi^+\rangle_{AB} = \frac{1}{\sqrt{2}}(|0\rangle_A|0\rangle_B + |1\rangle_A|1\rangle_B)$$
+
+The total system state is:
+
+$$|\Psi_{total}\rangle = |\psi\rangle_A \otimes |\Phi^+\rangle_{AB}$$
+
+### 3.2 Step 1: Bell State Measurement
+
+Alice performs a Bell measurement on her two qubits (the unknown state and her half of the Bell pair). This is achieved by:
+
+1. **CNOT operation**: Apply CNOT between qubit A (unknown state) and qubit A' (Alice's Bell state qubit)
+2. **Hadamard operation**: Apply H gate to qubit A
+3. **Measurement**: Measure both qubits in the computational basis
+
+The Bell measurement projects the state onto one of four Bell states with equal probability:
+
+$$|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$$
+$$|\Phi^-\rangle = \frac{1}{\sqrt{2}}(|00\rangle - |11\rangle)$$
+$$|\Psi^+\rangle = \frac{1}{\sqrt{2}}(|01\rangle + |10\rangle)$$
+$$|\Psi^-\rangle = \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle)$$
+
+### 3.3 Step 2: Classical Communication
+
+Alice sends the 2-bit measurement result to Bob via a classical channel. The measurement outcome determines which Bell state was observed.
+
+### 3.4 Step 3: Conditional Unitary Correction
+
+Based on Alice's measurement result, Bob applies the appropriate unitary correction to his qubit:
+
+| Measurement Result | Bell State | Correction Applied |
+|-------------------|------------|-------------------|
+| 00 | $|\Phi^+\rangle$ | $I$ (Identity) |
+| 01 | $|\Psi^+\rangle$ | $X$ |
+| 10 | $|\Phi^-\rangle$ | $Z$ |
+| 11 | $|\Psi^-\rangle$ | $XZ$ |
+
+### 3.5 Mathematical Derivation
+
+The complete protocol can be expressed mathematically as follows:
+
+**Initial state:**
+$$|\Psi_{total}\rangle = (\alpha|0\rangle + \beta|1\rangle)_A \otimes \frac{1}{\sqrt{2}}(|0\rangle_{A'}|0\rangle_B + |1\rangle_{A'}|1\rangle_B)$$
+
+**After CNOT (A → A'):**
+$$|\Psi_1\rangle = \frac{1}{\sqrt{2}}[\alpha|0\rangle_A(|0\rangle_{A'}|0\rangle_B + |1\rangle_{A'}|1\rangle_B) + \beta|1\rangle_A(|1\rangle_{A'}|0\rangle_B + |0\rangle_{A'}|1\rangle_B)]$$
+
+**After Hadamard on A:**
+$$|\Psi_2\rangle = \frac{1}{2}[(|0\rangle_A + |1\rangle_A)\alpha(|0\rangle_{A'}|0\rangle_B + |1\rangle_{A'}|1\rangle_B) + (|0\rangle_A - |1\rangle_A)\beta(|1\rangle_{A'}|0\rangle_B + |0\rangle_{A'}|1\rangle_B)]$$
+
+**Expanding and collecting terms:**
+$$|\Psi_2\rangle = \frac{1}{2}[|00\rangle_{AA'}(\alpha|0\rangle_B + \beta|1\rangle_B) + |01\rangle_{AA'}(\alpha|1\rangle_B + \beta|0\rangle_B) + |10\rangle_{AA'}(\alpha|0\rangle_B - \beta|1\rangle_B) + |11\rangle_{AA'}(\alpha|1\rangle_B - \beta|0\rangle_B)]$$
+
+**After measurement and correction:**
+- If measurement yields 00: Bob's state becomes $\alpha|0\rangle + \beta|1\rangle$ (no correction needed)
+- If measurement yields 01: Bob's state becomes $\alpha|1\rangle + \beta|0\rangle$, apply X to get $\alpha|0\rangle + \beta|1\rangle$
+- If measurement yields 10: Bob's state becomes $\alpha|0\rangle - \beta|1\rangle$, apply Z to get $\alpha|0\rangle + \beta|1\rangle$
+- If measurement yields 11: Bob's state becomes $\alpha|1\rangle - \beta|0\rangle$, apply XZ to get $\alpha|0\rangle + \beta|1\rangle$
+
+## 4. Protocol Implementation Details
+
+### 4.1 Bell State Generation
+
+The Bell state $|\Phi^+\rangle$ is generated by:
+
+1. Initialize two qubits in state $|0\rangle$
+2. Apply Hadamard gate to the first qubit: $H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$
+3. Apply CNOT gate between the qubits: $CNOT \cdot \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)|0\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$
+
+### 4.2 Measurement and Correction Algorithm
+
+```python
+def bell_measurement_correction(measurement_result, bell_state_type):
+    """
+    Determine correction based on measurement result and Bell state type
+    
+    Args:
+        measurement_result: 2-bit string (00, 01, 10, 11)
+        bell_state_type: 1 for |Φ⁺⟩, 3 for |Ψ⁻⟩
+    
+    Returns:
+        List of gates to apply
+    """
+    if bell_state_type == 1:  # |Φ⁺⟩ state
+        if measurement_result == "00":
+            return []  # No correction
+        elif measurement_result == "01":
+            return ["X"]
+        elif measurement_result == "10":
+            return ["Z"]
+        elif measurement_result == "11":
+            return ["X", "Z"]
+    
+    elif bell_state_type == 3:  # |Ψ⁻⟩ state
+        if measurement_result == "00":
+            return ["X"]
+        elif measurement_result == "01":
+            return []  # No correction
+        elif measurement_result == "10":
+            return ["X", "Z"]
+        elif measurement_result == "11":
+            return ["Z"]
+```
+
+## 5. Error Analysis
+
+### 5.1 Sources of Error
+
+1. **Quantum Memory Decoherence**: Loss of quantum information over time
+2. **Gate Imperfections**: Non-ideal quantum gate operations
+3. **Measurement Errors**: Imperfect measurement operations
+4. **Channel Noise**: Classical communication errors
+
+### 5.2 Fidelity Calculation
+
+The fidelity of teleportation is defined as:
+
+$$F = |\langle\psi_{ideal}|\psi_{actual}\rangle|^2$$
+
+where $|\psi_{ideal}\rangle$ is the target state and $|\psi_{actual}\rangle$ is the actual state after teleportation.
+
+## 6. Complexity Analysis
+
+- **Quantum Operations**: 2 CNOT gates, 1 Hadamard gate, 2 measurements
+- **Classical Communication**: 2 bits
+- **Time Complexity**: $O(1)$ (constant time)
+- **Space Complexity**: 3 qubits (1 unknown + 2 Bell state qubits)
+
+## 7. Applications
+
+1. **Quantum Repeaters**: Extending quantum communication over long distances
+2. **Quantum Computing**: State transfer between quantum processors
+3. **Quantum Networks**: Building distributed quantum systems
+4. **Quantum Cryptography**: Secure key distribution
+
+## 8. Conclusion
+
+The quantum teleportation protocol provides a fundamental mechanism for transferring quantum information using shared entanglement and classical communication. The protocol is deterministic in principle, though practical implementations are subject to various sources of noise and error.
+
+The mathematical framework presented here forms the foundation for more advanced quantum communication protocols and quantum network architectures.
+
+---
+
+**References:**
+1. Bennett, C. H., et al. "Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels." Physical Review Letters 70.13 (1993): 1895.
+2. Nielsen, M. A., & Chuang, I. L. "Quantum computation and quantum information." Cambridge University Press (2010).
+3. Pirandola, S., et al. "Advances in quantum cryptography." Advanced Optical Technologies 9.5-6 (2020): 361-386. 
